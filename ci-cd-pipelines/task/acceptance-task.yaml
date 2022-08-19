@@ -1,0 +1,27 @@
+apiVersion: tekton.dev/v1alpha1
+kind: Task
+metadata:
+  name:  acceptance-task
+spec:
+  inputs:
+    resources:
+      - name: source-repo
+        type: git
+
+  steps:
+    - name: build
+      image: golang
+      workingDir: /workspace/source-repo
+      command:
+        - make
+      args:
+        - build
+    - name: acceptance-test
+      image: golang
+      workingDir: /workspace/source-repo
+      command:
+        - make
+      args:
+        - acceptance
+      securityContext:
+        privileged: true
